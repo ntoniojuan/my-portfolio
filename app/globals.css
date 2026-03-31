@@ -1,16 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: #f1f5f9;
-    --foreground: #1e293b;
-  }
-  .dark {
-    --background: #09090b;
-    --foreground: #e2e8f0;
-  }
+:root {
+  --background: #f1f5f9;
+  --foreground: #1e293b;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #e2e8f0;
 }
 
 body {
