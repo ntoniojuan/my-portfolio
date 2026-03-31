@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ThemeProvider, useTheme } from "next-themes";
-import { Moon, Sun, Briefcase, Zap, BarChart, Code, FolderGit2, FileText, Terminal, X, Download } from "lucide-react";
+import { Moon, Sun, Briefcase, Code, FileText, Terminal, X, Download } from "lucide-react";
 
-// --- MAIN PAGE COMPONENT ---
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -13,7 +12,7 @@ export default function Home() {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system">
-      <div className="min-h-screen flex flex-col items-center p-6 md:p-12">
+      <div className="min-h-screen flex flex-col items-center p-6 md:p-12 transition-colors duration-300">
         <Navbar />
         <Hero />
         <Dashboard />
@@ -22,15 +21,14 @@ export default function Home() {
   );
 }
 
-// --- NAVBAR ---
 function Navbar() {
   const { theme, setTheme } = useTheme();
   return (
-    <nav className="w-full max-w-4xl flex justify-between items-center mb-16 p-4 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-slate-200 dark:border-zinc-800">
+    <nav className="w-full max-w-4xl flex justify-between items-center mb-16 p-4 bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-slate-200 dark:border-zinc-800 transition-colors">
       <div className="font-bold text-lg dark:text-white">Aj Norona</div>
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="p-2 rounded-md bg-slate-100 dark:bg-zinc-800 dark:text-white"
+        className="p-2 rounded-md bg-slate-100 dark:bg-zinc-800 dark:text-white hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors"
       >
         {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
       </button>
@@ -38,7 +36,6 @@ function Navbar() {
   );
 }
 
-// --- HERO ---
 function Hero() {
   return (
     <div className="text-center max-w-2xl mb-16">
@@ -53,7 +50,6 @@ function Hero() {
   );
 }
 
-// --- DASHBOARD ---
 function Dashboard() {
   const { theme } = useTheme();
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -71,7 +67,7 @@ function Dashboard() {
           <button
             key={card.id}
             onClick={() => setActiveModal(card.id)}
-            className="flex flex-col items-center p-8 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl hover:border-blue-500 transition-all dark:text-white"
+            className="flex flex-col items-center p-8 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 transition-all dark:text-white shadow-sm"
           >
             <div className="text-slate-400 mb-4">{card.icon}</div>
             <h3 className="font-semibold">{card.title}</h3>
@@ -90,10 +86,9 @@ function Dashboard() {
   );
 }
 
-// --- MODAL / TERMINAL ---
 function TerminalModal({ section, onClose, isDark }: { section: string, onClose: () => void, isDark: boolean }) {
   const [input, setInput] = useState("");
-  const [unlocked, setUnlocked] = useState(!isDark); // If light mode, unlock instantly. If dark, lock it.
+  const [unlocked, setUnlocked] = useState(!isDark);
   const [history, setHistory] = useState([`Type "open ${section}" to view content.`]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -121,11 +116,10 @@ function TerminalModal({ section, onClose, isDark }: { section: string, onClose:
             {isDark && !unlocked && <Terminal size={16} />}
             <span className="text-sm font-mono">{isDark && !unlocked ? 'aj-terminal ~' : `Viewing: ${section}`}</span>
           </div>
-          <button onClick={onClose}><X size={20} /></button>
+          <button onClick={onClose} className="hover:text-slate-500 transition-colors"><X size={20} /></button>
         </div>
 
         <div className="p-6 h-96 overflow-y-auto">
-          {/* Terminal View */}
           {isDark && !unlocked && (
             <div className="font-mono text-sm space-y-2 text-slate-300">
               {history.map((line, i) => <div key={i}>{line}</div>)}
@@ -135,15 +129,16 @@ function TerminalModal({ section, onClose, isDark }: { section: string, onClose:
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  className="bg-transparent border-none outline-none text-white flex-grow"
+                  className="bg-transparent border-none outline-none text-white flex-grow caret-emerald-500"
+                  spellCheck="false"
+                  autoComplete="off"
                 />
               </form>
             </div>
           )}
 
-          {/* Content View */}
           {unlocked && (
-            <div className="dark:text-white">
+            <div className="dark:text-white animate-in fade-in duration-500">
               {section === "experience" && (
                 <div>
                   <h3 className="text-xl font-bold">MedGrocer</h3>
@@ -159,14 +154,14 @@ function TerminalModal({ section, onClose, isDark }: { section: string, onClose:
               {section === "tech" && (
                 <div className="flex flex-wrap gap-2">
                   {["Playwright", "Next.js", "Make", "Airtable", "JavaScript", "Tailwind"].map(t => (
-                    <span key={t} className="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-sm">{t}</span>
+                    <span key={t} className="px-3 py-1 bg-slate-100 dark:bg-zinc-800 rounded-full text-sm border border-slate-200 dark:border-zinc-700">{t}</span>
                   ))}
                 </div>
               )}
               {section === "resume" && (
                 <div className="flex flex-col items-center justify-center mt-10">
                   <FileText size={48} className="text-slate-400 mb-4" />
-                  <button className="flex items-center gap-2 px-6 py-2 bg-blue-500 text-white rounded-lg">
+                  <button className="flex items-center gap-2 px-6 py-2 bg-blue-500 hover:bg-blue-600 transition-colors text-white rounded-lg">
                     <Download size={18} /> Download PDF
                   </button>
                 </div>
